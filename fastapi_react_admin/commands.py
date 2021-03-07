@@ -1,6 +1,6 @@
 from copy import copy
-from typing import Callable, Any
 from tortoise import Tortoise
+from typing import Callable, Any
 from tortoise.exceptions import IntegrityError
 
 
@@ -10,12 +10,13 @@ async def create_super_user() -> None:
     """
     from .config import (
         hasher,
-        orm_config,
         user_model,
-        hasher_hash_method)
+        orm_config,
+        hasher_hash_method
+    )
 
     config: dict[str, Any] = copy(orm_config)
-    config.pop("generate_schemas")
+    config.pop("generate_schemas", None)
     await Tortoise.init(**config)
     username: str = input("Username: ")
     email: str = input("Email: ")
@@ -23,8 +24,10 @@ async def create_super_user() -> None:
     repeat_password: str = input("Repeat password: ")
     if not password == repeat_password:
         raise ValueError("Passwords did not match.")
-    is_superuser: bool = True
+    if len(password) < 6:
+        raise ValueError("Password's length less then 6 symbols.")
     is_active: bool = True
+    is_superuser: bool = True
     hash: Callable = getattr(hasher(), hasher_hash_method)
     password: str = hash(password)
     try:
@@ -51,16 +54,18 @@ def compile_model_admin() -> None:
 
     result: str = input("Decision: ")
 
-    if result.lower() != "yes":
+    if result.lower() not in ("yes", "y"):
         exit()
 
     if isinstance(admins, Callable):
         admins: list[object] = admins()
+
     for admin in admins:
         initialized: object = admin()
         initialized.compile()
 
     print("Models directory regenerated successfully.")
+
 
 def compile_app_admin() -> None:
     """
@@ -74,12 +79,14 @@ def compile_app_admin() -> None:
 
     result: str = input("Decision: ")
 
-    if result.lower() != "yes":
+    if result.lower() not in ("yes", "y"):
         exit()
 
     initialized: list = list()
+
     if isinstance(admins, Callable):
         admins: list[object] = admins()
+
     for admin in admins:
         initialized.append(admin())
 

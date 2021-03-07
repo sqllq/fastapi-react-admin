@@ -1,0 +1,12 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "fastapi_react_admin"
+author = "Bogdan Berezovskiy"
+author-email = "berezovskiy.sq@gmail.com"
+home-page = "https://github.com/sqllq/fastapi-react-admin"
+classifiers = [ "License :: OSI Approved :: MIT License",]
+description-file = "README.md"
+
